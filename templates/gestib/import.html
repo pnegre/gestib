@@ -1,0 +1,30 @@
+<html>
+
+<head>
+
+
+</head>
+
+
+
+<body>
+<h1> Importar Alumnes (xml del gestib)</h1>
+
+{% if ok %}
+
+	OK
+
+{% else %}
+
+	<form method="post" enctype="multipart/form-data">
+
+	<input type="file" name="file">
+	<br><br>
+	<input type="submit">
+
+	</form>
+
+{% endif %}
+
+</body>
+</html>

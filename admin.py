@@ -1,0 +1,14 @@
+# -*- coding: utf-8 -*-
+
+from django.contrib import admin
+from gestib.models import *
+
+
+admin.site.register(Alumne)
+admin.site.register(Curs)
+admin.site.register(Professor)
+admin.site.register(Grup)
+
+
+
+
