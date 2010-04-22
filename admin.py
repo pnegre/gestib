@@ -8,6 +8,7 @@ admin.site.register(Alumne)
 admin.site.register(Curs)
 admin.site.register(Professor)
 admin.site.register(Grup)
+admin.site.register(Submateria)
 
 
 

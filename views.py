@@ -58,6 +58,16 @@ def importData(request):
 			a = Alumne(nom=nom,llinatge1=l1,llinatge2=l2,expedient=exp,grup=gp[0])
 			a.save()
 		
+		submateries = dom.getElementsByTagName('SUBMATERIES')[0].getElementsByTagName('SUBMATERIA')
+		for submateria in submateries:
+			codi = submateria.getAttribute('codi')
+			descripcio = submateria.getAttribute('descripcio')
+			nom = submateria.getAttribute('curta')
+			curs = Curs.objects.filter(codi=submateria.getAttribute('curs'))
+			
+			sbm = Submateria(nom=nom,descripcio=descripcio,codi=codi,curs=curs[0])
+			sbm.save()
+		
 		ok = True
 	
 	return render_to_response(

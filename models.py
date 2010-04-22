@@ -43,6 +43,15 @@ class Alumne(models.Model):
 		return self.llinatge1 + ' ' + self.llinatge2 + ', ' + self.nom
 
 
+class Submateria(models.Model):
+	nom = models.CharField(max_length=200)
+	descripcio = models.CharField(max_length=400)
+	codi = models.CharField(max_length=200)
+	
+	curs = models.ForeignKey(Curs)
+	
+	def __unicode__(self):
+		return self.nom
 
 
 
