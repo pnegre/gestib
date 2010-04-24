@@ -2,6 +2,24 @@
 
 <head>
 
+<script type="text/javascript" language="JavaScript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js">
+</script>
+
+<script type="text/javascript" language="JavaScript">
+
+$(document).ready(function() {
+	
+	$('.submit').click(function() {
+		alert("a");
+		$.post("/gestib/doimport/",$('#form').serialize())
+		alert("b");
+		return false;
+	});
+	
+});
+
+</script>
+
 
 </head>
 
@@ -12,15 +30,15 @@
 
 {% if ok %}
 
-	OK
+	
 
 {% else %}
 
-	<form method="post" enctype="multipart/form-data">
+	<form method="post" enctype="multipart/form-data" id="form">
 
 	<input type="file" name="file">
 	<br><br>
-	<input type="submit">
+	<input type="submit" class="submit">
 
 	</form>
 
