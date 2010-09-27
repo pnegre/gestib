@@ -7,17 +7,6 @@
 
 <script type="text/javascript" language="JavaScript">
 
-$(document).ready(function() {
-	
-	$('.submit').click(function() {
-		alert("a");
-		$.post("/gestib/doimport/",$('#form').serialize())
-		alert("b");
-		return false;
-	});
-	
-});
-
 </script>
 
 
@@ -34,7 +23,7 @@ $(document).ready(function() {
 
 {% else %}
 
-	<form method="post" enctype="multipart/form-data" id="form">
+	<form method="post" enctype="multipart/form-data" id="form" action="/gestib/doimport/">
 
 	<input type="file" name="file">
 	<br><br>
