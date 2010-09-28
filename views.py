@@ -57,13 +57,26 @@ def importAlumnes(dom):
 
 def importSubmateries(dom):
 	submateries = dom.getElementsByTagName('SUBMATERIES')[0].getElementsByTagName('SUBMATERIA')
+	sessions = dom.getElementsByTagName('HORARIP')[0].getElementsByTagName('SESSIO')
 	for submateria in submateries:
 		codi = submateria.getAttribute('codi')
 		descripcio = submateria.getAttribute('descripcio')
 		nom = submateria.getAttribute('curta')
 		curs = Curs.objects.filter(codi=submateria.getAttribute('curs'))
+		grup = None
 		
-		sbm = Submateria(nom=nom,descripcio=descripcio,codi=codi,curs=curs[0])
+		for s in sessions:
+			sm = s.getAttribute('submateria')
+			g = s.getAttribute('grup')
+			if sm == codi:
+				gr = Grup.objects.filter(codi=g)
+				if gr: 
+					grup=gr[0]
+					break
+		
+		if grup == None: continue
+		
+		sbm = Submateria(nom=nom,descripcio=descripcio,codi=codi,curs=curs[0],grup=grup)
 		sbm.save()
 
 

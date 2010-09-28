@@ -49,6 +49,7 @@ class Submateria(models.Model):
 	codi = models.CharField(max_length=200)
 	
 	curs = models.ForeignKey(Curs)
+	grup = models.ForeignKey(Grup)
 	
 	def __unicode__(self):
 		return self.nom
