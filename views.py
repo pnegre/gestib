@@ -3,6 +3,7 @@
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.utils import simplejson
+from django.contrib.auth.decorators import login_required, permission_required
 
 from xml.dom.minidom import parse, parseString
 
