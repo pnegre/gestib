@@ -80,7 +80,7 @@ def importSubmateries(dom):
 		sbm.save()
 
 
-
+@permission_required('gestib.importar_alumnes')
 def importData(request):
 	return render_to_response(
 			'gestib/import.html', {
@@ -88,6 +88,7 @@ def importData(request):
 
 
 
+@permission_required('gestib.importar_alumnes')
 def doImport(request):
 	if request.method == 'POST':
 		f = request.FILES['file']
@@ -101,3 +102,6 @@ def doImport(request):
 	return render_to_response(
 			'gestib/ok.html', {
 	} )
+
+
+

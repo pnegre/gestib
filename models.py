@@ -42,6 +42,11 @@ class Alumne(models.Model):
 	def __unicode__(self):
 		return self.llinatge1 + ' ' + self.llinatge2 + ', ' + self.nom
 
+	class Meta:
+		permissions = (
+			("importar_alumnes", "Pot importar alumnes gestib"),
+		)
+
 
 class Submateria(models.Model):
 	nom = models.CharField(max_length=200)
@@ -49,7 +54,6 @@ class Submateria(models.Model):
 	codi = models.CharField(max_length=200)
 	
 	curs = models.ForeignKey(Curs)
-	grup = models.ForeignKey(Grup)
 	
 	def __unicode__(self):
 		return self.nom
