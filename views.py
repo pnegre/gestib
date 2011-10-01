@@ -13,6 +13,9 @@ from gestib.models import *
 def importProfessors(dom):
 	professors = dom.getElementsByTagName('PROFESSOR')
 	for prof in professors:
+		codi_prof = prof.getAttribute('codi')
+		if Professor.objects.filter(codi=codi_prof): continue
+
 		p = Professor(
 			codi = prof.getAttribute('codi'),
 			nom = prof.getAttribute('nom'),
@@ -25,11 +28,17 @@ def importProfessors(dom):
 def importCursos(dom):
 	cursos = dom.getElementsByTagName('CURS')
 	for curs in cursos:
-		c = Curs(nom=curs.getAttribute('descripcio'),codi=curs.getAttribute('codi'))
-		c.save()
+		cu = Curs.objects.filter(codi=curs.getAttribute('codi'))
+		if cu == None or len(cu) == 0:
+			c = Curs(nom=curs.getAttribute('descripcio'),codi=curs.getAttribute('codi'))
+			c.save()
+		else:
+			c = cu[0]
 		
 		grups = curs.getElementsByTagName('GRUP')
 		for grup in grups:
+			if Grup.objects.filter(codi=grup.getAttribute('codi')): continue
+
 			prof = Professor.objects.filter(codi=grup.getAttribute('tutor'))
 			if prof == None: continue
 			if len(prof) == 0: continue
@@ -45,6 +54,8 @@ def importCursos(dom):
 def importAlumnes(dom):
 	alumnes = dom.getElementsByTagName('ALUMNE')
 	for alumne in alumnes:
+		if Alumne.objects.filter(expedient=alumne.getAttribute('expedient')): continue
+
 		nom = alumne.getAttribute('nom')
 		l1 = alumne.getAttribute('ap1')
 		l2 = alumne.getAttribute('ap2')
@@ -56,6 +67,8 @@ def importAlumnes(dom):
 		a = Alumne(nom=nom,llinatge1=l1,llinatge2=l2,expedient=exp,grup=gp[0])
 		a.save()
 
+# No emprar, per ara
+# Hi ha problemes en importar
 def importSubmateries(dom):
 	submateries = dom.getElementsByTagName('SUBMATERIES')[0].getElementsByTagName('SUBMATERIA')
 	sessions = dom.getElementsByTagName('HORARIP')[0].getElementsByTagName('SESSIO')
@@ -98,7 +111,7 @@ def doImport(request):
 		importProfessors(dom)
 		importCursos(dom)
 		importAlumnes(dom)
-		importSubmateries(dom)
+		#importSubmateries(dom)
 	
 	return render_to_response(
 			'gestib/ok.html', {

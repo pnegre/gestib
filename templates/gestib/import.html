@@ -24,7 +24,7 @@
 {% else %}
 
 	<form method="post" enctype="multipart/form-data" id="form" action="/gestib/doimport/">
-
+	{% csrf_token %}
 	<input type="file" name="file">
 	<br><br>
 	<input type="submit" class="submit">
