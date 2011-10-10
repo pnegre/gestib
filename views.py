@@ -37,19 +37,22 @@ def importCursos(dom):
 		
 		grups = curs.getElementsByTagName('GRUP')
 		for grup in grups:
-			if Grup.objects.filter(codi=grup.getAttribute('codi')): continue
+			try:
+				Grup.objects.get(codi=grup.getAttribute('codi'))
 
-			prof = Professor.objects.filter(codi=grup.getAttribute('tutor'))
-			if prof == None: continue
-			if len(prof) == 0: continue
-			
-			g = Grup(
-				nom = grup.getAttribute('nom'),
-				curs = c,
-				tutor = prof[0],
-				codi = grup.getAttribute('codi'),
-			)
-			g.save()
+			except:
+				try:
+					prof = Professor.objects.get(codi=grup.getAttribute('tutor'))
+				except:
+					continue
+				
+				g = Grup(
+					nom = grup.getAttribute('nom'),
+					curs = c,
+					tutor = prof,
+					codi = grup.getAttribute('codi'),
+				)
+				g.save()
 
 def importAlumnes(dom):
 	alumnes = dom.getElementsByTagName('ALUMNE')
