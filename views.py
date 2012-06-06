@@ -97,6 +97,7 @@ def importSubmateries(dom):
 		sbm.save()
 
 
+# Mostra el form per importar dades de l'xml del gestib
 @permission_required('gestib.importar_alumnes')
 def importData(request):
 	return render_to_response(
@@ -104,7 +105,7 @@ def importData(request):
 	} )
 
 
-
+# Mostra el resultat de la importacio (ok si ha anat bé)
 @permission_required('gestib.importar_alumnes')
 def doImport(request):
 	if request.method == 'POST':

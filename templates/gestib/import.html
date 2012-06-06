@@ -1,37 +1,28 @@
-<html>
+{% extends "hub/menu_base.html" %}
 
-<head>
-
-<script type="text/javascript" language="JavaScript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js">
-</script>
-
-<script type="text/javascript" language="JavaScript">
-
-</script>
+{% block baseheader %}	
+{% endblock %}
 
 
-</head>
+{% block basebody %}
 
+	<h1> Importar Alumnes (xml del gestib)</h1>
 
+	{% if ok %}
 
-<body>
-<h1> Importar Alumnes (xml del gestib)</h1>
+	{% else %}
 
-{% if ok %}
+		<form method="post" enctype="multipart/form-data" id="form" action="/gestib/doimport/">
+		{% csrf_token %}
+		Sel·lecciona el fitxer on hi ha les dades del gestib en format XML:
+		<br><br>
+		<input type="file" name="file">
+		<br><br>
+		<input type="submit" class="submit">
 
+		</form>
+
+	{% endif %}
+		
 	
-
-{% else %}
-
-	<form method="post" enctype="multipart/form-data" id="form" action="/gestib/doimport/">
-	{% csrf_token %}
-	<input type="file" name="file">
-	<br><br>
-	<input type="submit" class="submit">
-
-	</form>
-
-{% endif %}
-
-</body>
-</html>
+{% endblock %}
