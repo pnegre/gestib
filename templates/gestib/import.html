@@ -1,6 +1,6 @@
 {% extends "hub/menu_base.html" %}
 
-{% block baseheader %}	
+{% block baseheader %}
 {% endblock %}
 
 
@@ -8,7 +8,9 @@
 
 	<h1> Importar Alumnes (xml del gestib)</h1>
 
-	{% if ok %}
+	{% if finished %}
+
+	Tot OK!!
 
 	{% else %}
 
@@ -23,6 +25,6 @@
 		</form>
 
 	{% endif %}
-		
-	
+
+
 {% endblock %}

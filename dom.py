@@ -29,9 +29,9 @@ def importProfessors(dom):
 def importCursos(dom, anny):
     cursos = dom.getElementsByTagName('CURS')
     for curs in cursos:
-        cu = Curs.objects.filter(codi=curs.getAttribute('codi'))
+        cu = Curs.objects.filter(codi=curs.getAttribute('codi'), anny=anny)
         if cu == None or len(cu) == 0:
-            c = Curs(nom=curs.getAttribute('descripcio'),codi=curs.getAttribute('codi'))
+            c = Curs(nom=curs.getAttribute('descripcio'),codi=curs.getAttribute('codi'),anny=anny)
             c.save()
         else:
             c = cu[0]

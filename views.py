@@ -28,8 +28,12 @@ def importData(request):
                 raise Exception("Error in XML: els anys no coincideixen. XML: %d, bbdd: %d" % (anObj.any1, getYear(dom)))
 
             importProfessors(dom)
-            # importCursos(dom, anObj)
+            importCursos(dom, anObj)
             # importAlumnes(dom,anObj)
+
+            return render_to_response('gestib/import.html', {
+                'finished': True,
+            })
 
     else:
         form = ImportForm()
