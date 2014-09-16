@@ -12,12 +12,12 @@
 
 	{% else %}
 
-		<form method="post" enctype="multipart/form-data" id="form" action="/gestib/doimport/">
-		{% csrf_token %}
-		Sel·lecciona el fitxer on hi ha les dades del gestib en format XML:
-		<br><br>
-		<input type="file" name="file">
-		<br><br>
+		<form method="post" enctype="multipart/form-data" id="form" action="/gestib/import/">
+
+            <table border="1">
+                {{ form.as_table }}
+            </table>
+
 		<input type="submit" class="submit">
 
 		</form>

@@ -7,7 +7,7 @@ class Any(models.Model):
     any2 = models.IntegerField()
 
     def __unicode__(self):
-        return "%d-%d" % (self.any1, self.any2)
+        return "%d - %d" % (self.any1, self.any2)
 
 
 class Curs(models.Model):

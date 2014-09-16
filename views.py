@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from xml.dom.minidom import parse, parseString
 
 from gestib.models import *
+from gestib.forms import *
 
 
 def importProfessors(dom):
@@ -100,26 +101,37 @@ def importSubmateries(dom):
 # Mostra el form per importar dades de l'xml del gestib
 @permission_required('gestib.importar_alumnes')
 def importData(request):
-	return render_to_response(
-			'gestib/import.html', {
-	} )
+    if request.method == 'POST':
+        form = ImportForm(request.POST, request.FILES)
+        if form.is_valid():
+            anny = form.cleaned_data['anny']
+            fle = form.cleaned_data['fle']
+            anObj = Any.objects.get(id=anny)
+            print anObj
+            print fle
+    else:
+        form = ImportForm()
+
+    return render_to_response('gestib/import.html', {
+        'form': form,
+    } )
 
 
 # Mostra el resultat de la importacio (ok si ha anat bé)
-@permission_required('gestib.importar_alumnes')
-def doImport(request):
-	if request.method == 'POST':
-		f = request.FILES['file']
-		dom = parse(f)
+# @permission_required('gestib.importar_alumnes')
+# def doImport(request):
+# 	if request.method == 'POST':
+# 		f = request.FILES['file']
+# 		dom = parse(f)
 		
-		importProfessors(dom)
-		importCursos(dom)
-		importAlumnes(dom)
-		#importSubmateries(dom)
+# 		importProfessors(dom)
+# 		importCursos(dom)
+# 		importAlumnes(dom)
+# 		#importSubmateries(dom)
 	
-	return render_to_response(
-			'gestib/ok.html', {
-	} )
+# 	return render_to_response(
+# 			'gestib/ok.html', {
+# 	} )
 
 
 
