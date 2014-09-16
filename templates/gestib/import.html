@@ -10,7 +10,13 @@
 
 	{% if finished %}
 
-	Tot OK!!
+	<table border="1">
+		<tr> <td> Núm. profes importats: </td> <td> {{ nprofs}} </td> </tr>
+		<tr> <td> Alumnes: </td> <td> {{ nalumnes }} </td> </tr>
+		<tr> <td> Cursos: </td> <td> {{ ncursos }} </td> </tr>
+		<tr> <td> Grups: </td> <td> {{ ngrups }} </td> </tr>
+		<tr> <td> Matrícules: </td> <td> {{ nmats }} </td> </tr>
+	</table>
 
 	{% else %}
 
