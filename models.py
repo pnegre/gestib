@@ -9,6 +9,16 @@ class Any(models.Model):
     def __unicode__(self):
         return "%d - %d" % (self.any1, self.any2)
 
+class Avaluacio(models.Model):
+    nom = models.CharField(max_length=200)
+    anny = models.ForeignKey(Any)
+    data1 = models.DateField()
+    data2 = models.DateField()
+
+    def __unicode__(self):
+        return str(self.anny) + " " + self.nom
+
+
 
 class Curs(models.Model):
         nom = models.CharField(max_length=200)

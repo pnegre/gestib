@@ -11,7 +11,4 @@ admin.site.register(Grup)
 admin.site.register(Submateria)
 admin.site.register(Any)
 admin.site.register(Matricula)
-
-
-
-
+admin.site.register(Avaluacio)
