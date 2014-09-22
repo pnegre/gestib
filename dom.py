@@ -45,21 +45,27 @@ def importCursos(dom, anny):
 
         grups = curs.getElementsByTagName('GRUP')
         for grup in grups:
+            tutor = None
             try:
-                Grup.objects.get(codi=grup.getAttribute('codi'))
-
+                tutor = Professor.objects.get(codi=grup.getAttribute('tutor'))
             except:
-                try:
-                    prof = Professor.objects.get(codi=grup.getAttribute('tutor'))
-                except:
-                    continue
+                pass
 
+            try:
+                g = Grup.objects.get(codi=grup.getAttribute('codi'))
+                if tutor:
+                    g.tutor = tutor
+                    g.save()
+
+            except Grup.DoesNotExist:
                 g = Grup(
                     nom = grup.getAttribute('nom'),
                     curs = c,
-                    tutor = prof,
                     codi = grup.getAttribute('codi'),
                 )
+                if tutor:
+                    g.tutor = tutor
+
                 g.save()
                 ngrups += 1
 

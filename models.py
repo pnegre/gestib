@@ -43,7 +43,7 @@ class Grup(models.Model):
         nom = models.CharField(max_length=200)
         codi = models.CharField(max_length=200)
 
-        tutor = models.ForeignKey(Professor)
+        tutor = models.ForeignKey(Professor, blank=True, null=True)
         curs = models.ForeignKey(Curs)
 
         def __unicode__(self):
