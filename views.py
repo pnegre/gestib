@@ -17,20 +17,21 @@ def importData(request):
     if request.method == 'POST':
         form = ImportForm(request.POST, request.FILES)
         if form.is_valid():
-            anny = form.cleaned_data['anny']
+            annyid = form.cleaned_data['anny']
             fle = form.cleaned_data['fle']
-            anObj = Any.objects.get(id=anny)
+            anny = Any.objects.get(id=annyid)
 
             dom = parse(fle)
-            if anObj.any1 != getYear(dom):
+            if anny.any1 != getYear(dom):
                 # Any acadèmic no correspon amb l'any del fitxer XML
                 # TODO: Missatge d'error al form així com toca
-                raise Exception("Error in XML: els anys no coincideixen. XML: %d, bbdd: %d" % (anObj.any1, getYear(dom)))
+                raise Exception("Error in XML: els anys no coincideixen. XML: %d, bbdd: %d" % (anny.any1, getYear(dom)))
 
             nprofs = importProfessors(dom)
-            ncursos, ngrups = importCursos(dom, anObj)
-            nalumnes, nmats = importAlumnes(dom, anObj)
-            nsubs = importSubmateries(dom, anObj)
+            ncursos, ngrups = importCursos(dom, anny)
+            nalumnes, nmats = importAlumnes(dom, anny)
+            nsubs = importSubmateries(dom, anny)
+            nsubmatgrup = importSubmateriesGrup(dom)
 
             return render_to_response('gestib/import.html', {
                 'finished': True,
@@ -40,6 +41,7 @@ def importData(request):
                 'ngrups': ngrups,
                 'nmats': nmats,
                 'nsubs': nsubs,
+                'nsubmatgrup': nsubmatgrup
             })
 
     else:
@@ -48,20 +50,3 @@ def importData(request):
     return render_to_response('gestib/import.html', {
         'form': form,
     } )
-
-
-# Mostra el resultat de la importacio (ok si ha anat bé)
-# @permission_required('gestib.importar_alumnes')
-# def doImport(request):
-#   if request.method == 'POST':
-#       f = request.FILES['file']
-#       dom = parse(f)
-
-#       importProfessors(dom)
-#       importCursos(dom)
-#       importAlumnes(dom)
-#       #importSubmateries(dom)
-
-#   return render_to_response(
-#           'gestib/ok.html', {
-#   } )

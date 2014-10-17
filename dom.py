@@ -1,4 +1,6 @@
 
+from sets import Set
+
 from xml.dom.minidom import parse, parseString
 
 from gestib.models import *
@@ -120,8 +122,44 @@ def importSubmateries(dom, anny):
         except:
             pass
 
-        sbm = Submateria(nom=nom,descripcio=descripcio,curta=curta,codi=codi,curs=curs)
-        sbm.save()
-        nsubs += 1
+        try:
+            sbm = Submateria.objects.get(codi=codi, curs=curs)
+        except Submateria.DoesNotExist:
+            sbm = Submateria(nom=nom,descripcio=descripcio,curta=curta,codi=codi,curs=curs)
+            sbm.save()
+            nsubs += 1
 
     return nsubs
+
+
+def importSubmateriesGrup(dom):
+    nsubmatgrup = 0
+    horgs = dom.getElementsByTagName('HORARIG')[0].getElementsByTagName('SESSIO')
+    data = {}
+    for ses in horgs:
+        cgrup = ses.getAttribute('grup')
+        csubmat = ses.getAttribute('submateria')
+        if not cgrup in data.keys():
+            data[cgrup] = Set([ csubmat ])
+        else:
+            data[cgrup].add(csubmat)
+
+    for cg in data.keys():
+        try:
+            grup = Grup.objects.get(codi=cg)
+        except Grup.DoesNotExist:
+            continue
+
+        for cs in data[cg]:
+            try:
+                submateria = Submateria.objects.get(codi=cs)
+                try:
+                    SubmateriaGrup.objects.get(submateria=submateria, grup=grup)
+                except SubmateriaGrup.DoesNotExist:
+                    obj = SubmateriaGrup(submateria=submateria, grup=grup)
+                    obj.save()
+                    nsubmatgrup += 1
+            except Submateria.DoesNotExist:
+                pass
+
+    return nsubmatgrup

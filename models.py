@@ -84,4 +84,7 @@ class Submateria(models.Model):
 
 class SubmateriaGrup(models.Model):
     submateria = models.ForeignKey(Submateria)
-    grup = models.ForeignKey(grup)
+    grup = models.ForeignKey(Grup)
+
+    def __unicode__(self):
+        return self.grup.nom + ' ' + self.submateria.curta
