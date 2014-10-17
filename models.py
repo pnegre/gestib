@@ -73,9 +73,15 @@ class Matricula(models.Model):
 class Submateria(models.Model):
         nom = models.CharField(max_length=200)
         descripcio = models.CharField(max_length=400)
+        curta = models.CharField(max_length=400)
         codi = models.CharField(max_length=200)
 
-        curs = models.ForeignKey(Curs)
+        curs = models.ForeignKey(Curs, blank=True, null=True)
 
         def __unicode__(self):
                 return self.nom
+
+
+class SubmateriaGrup(models.Model):
+    submateria = models.ForeignKey(Submateria)
+    grup = models.ForeignKey(grup)

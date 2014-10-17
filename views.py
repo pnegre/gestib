@@ -29,7 +29,8 @@ def importData(request):
 
             nprofs = importProfessors(dom)
             ncursos, ngrups = importCursos(dom, anObj)
-            nalumnes, nmats = importAlumnes(dom,anObj)
+            nalumnes, nmats = importAlumnes(dom, anObj)
+            nsubs = importSubmateries(dom, anObj)
 
             return render_to_response('gestib/import.html', {
                 'finished': True,
@@ -38,6 +39,7 @@ def importData(request):
                 'ncursos': ncursos,
                 'ngrups': ngrups,
                 'nmats': nmats,
+                'nsubs': nsubs,
             })
 
     else:

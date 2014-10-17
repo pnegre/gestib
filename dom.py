@@ -105,28 +105,23 @@ def importAlumnes(dom, anny):
 
 
 
-# No emprar, per ara
-# Hi ha problemes en importar
-def importSubmateries(dom):
+
+def importSubmateries(dom, anny):
+    nsubs = 0
     submateries = dom.getElementsByTagName('SUBMATERIES')[0].getElementsByTagName('SUBMATERIA')
-    sessions = dom.getElementsByTagName('HORARIP')[0].getElementsByTagName('SESSIO')
     for submateria in submateries:
         codi = submateria.getAttribute('codi')
         descripcio = submateria.getAttribute('descripcio')
+        curta = submateria.getAttribute('curta')
         nom = submateria.getAttribute('curta')
-        curs = Curs.objects.filter(codi=submateria.getAttribute('curs'))
-        grup = None
+        curs = None
+        try:
+            curs = Curs.objects.get(codi=submateria.getAttribute('curs'), anny=anny)
+        except:
+            pass
 
-        for s in sessions:
-            sm = s.getAttribute('submateria')
-            g = s.getAttribute('grup')
-            if sm == codi:
-                gr = Grup.objects.filter(codi=g)
-                if gr:
-                    grup=gr[0]
-                    break
-
-        if grup == None: continue
-
-        sbm = Submateria(nom=nom,descripcio=descripcio,codi=codi,curs=curs[0],grup=grup)
+        sbm = Submateria(nom=nom,descripcio=descripcio,curta=curta,codi=codi,curs=curs)
         sbm.save()
+        nsubs += 1
+
+    return nsubs
