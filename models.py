@@ -47,7 +47,7 @@ class Grup(models.Model):
         curs = models.ForeignKey(Curs)
 
         def __unicode__(self):
-                return self.curs.nom + " " + self.nom
+                return self.curs.nom + " " + self.nom 
 
 
 class Alumne(models.Model):
@@ -79,7 +79,7 @@ class Submateria(models.Model):
         curs = models.ForeignKey(Curs, blank=True, null=True)
 
         def __unicode__(self):
-                return self.nom
+                return self.nom + ' ' + self.curs.anny
 
 
 class SubmateriaGrup(models.Model):
