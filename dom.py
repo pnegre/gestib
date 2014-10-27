@@ -83,6 +83,11 @@ def importAlumnes(dom, anny):
 
         try:
             alm = Alumne.objects.get(expedient=alumne.getAttribute('expedient'))
+            if alm.nom != alumne.getAttribute('nom'):
+                v1 = alm.nom + alm.llinatge1 + alm.llinatge2 + alm.expedient
+                v2 = alumne.getAttribute('nom') + alumne.getAttribute('ap1') + alumne.getAttribute('ap2')
+                raise Exception("Expedients duplicats..." + v1 + v2)
+                
         except Alumne.DoesNotExist:
             nom = alumne.getAttribute('nom')
             l1 = alumne.getAttribute('ap1')
