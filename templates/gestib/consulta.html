@@ -1,0 +1,34 @@
+{% extends "gestib/base.html" %}
+
+{% block head %}
+
+
+{% endblock %}
+
+
+{% block content %}
+
+	<h1> Consulta alumnes d'un grup </h1>
+
+    <div>
+    Any seleccionat: {{ anny }}
+    </div>
+    <br>
+    <form method="post">
+    Grup:
+    <select name="grup">
+    {% for g in grups %}
+        <option value="{{ g.id }}"> {{ g }} </option>
+    {% endfor %}
+    </select>
+    <br>
+    <br>
+    {% csrf_token %}
+    <input type="submit">
+    </form>
+
+    <div id="resultat">
+    </div>
+
+
+{% endblock %}
