@@ -48,6 +48,8 @@ def importCursos(incidencies, dom, anny):
             c = cu[0]
 
         grups = curs.getElementsByTagName('GRUP')
+        if len(grups) == 0:
+            incidencies.append("Curs %s no te grups" % (curs.getAttribute('descripcio')))
         for grup in grups:
             tutor = None
             try:
@@ -76,11 +78,10 @@ def importCursos(incidencies, dom, anny):
     return ncursos, ngrups
 
 
-def importAlumnes(dom, anny):
+def importAlumnes(incidencies, dom, anny):
     nalumnes = 0
     nmats = 0
     alumnes = dom.getElementsByTagName('ALUMNE')
-    incidencies = []
     for alumne in alumnes:
         exp = alumne.getAttribute('expedient')
 
@@ -102,8 +103,10 @@ def importAlumnes(dom, anny):
             nalumnes += 1
 
         gp = Grup.objects.filter(codi=alumne.getAttribute('grup'))
-        if gp == None: continue
-        if len(gp) == 0: continue
+        if gp == None or len(gp) == 0:
+            incidencies.append("Alumne %s no te grup assignat" % (alm))
+            continue
+
         grup = gp[0]
 
         try:
@@ -113,7 +116,7 @@ def importAlumnes(dom, anny):
             mt.save()
             nmats += 1
 
-    return incidencies, nalumnes, nmats
+    return nalumnes, nmats
 
 
 

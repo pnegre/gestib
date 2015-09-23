@@ -32,12 +32,15 @@ def importData(request):
             if anny.any1 != getYear(dom):
                 # Any acadèmic no correspon amb l'any del fitxer XML
                 # TODO: Missatge d'error al form així com toca
-                raise Exception("Error in XML: els anys no coincideixen. XML: %d, bbdd: %d" % (anny.any1, getYear(dom)))
+                message = "Error in XML: els anys no coincideixen. XML: %d, bbdd: %d" % (anny.any1, getYear(dom))
+                return renderResponse(request, 'gestib/missatge.html', {
+                    'message': message
+                })
 
             incidencies = []
             nprofs = importProfessors(incidencies, dom)
             ncursos, ngrups = importCursos(incidencies, dom, anny)
-            incidenciesAlumnes, nalumnes, nmats = importAlumnes(dom, anny)
+            nalumnes, nmats = importAlumnes(incidencies, dom, anny)
             # nsubs = importSubmateries(dom, anny)
             # nsubmatgrup = importSubmateriesGrup(dom)
 
