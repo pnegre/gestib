@@ -78,15 +78,21 @@ def stripchars(s):
     s = s.replace(u"ù","u")
     s = s.replace(u"ñ","n")
     s = s.replace(u"ç","c")
-    s = s.replace(" ", "")
     return s
 
 def tractaAlumne(al):
     pwd = ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(8))
-    l1 = stripchars(al.llinatge1.lower())
-    l2 = stripchars(al.llinatge2.lower())
+    l1 = stripchars(al.llinatge1.lower()).replace(" ", "")
+    l2 = stripchars(al.llinatge2.lower()).replace(" ", "")
     nm = stripchars(al.nom.lower())
-    username = nm[0] + l1 + l2[0]
+    username = ""
+    for p in nm.split(" "):
+        username += p[0]
+
+    username += l1
+    if len(l2) > 0:
+        username += l2[0]
+    
     return "null@callisto.esliceu.com;Palma;%s;%s;%s;%s;%s\n" % (al.llinatge1, al.llinatge2, al.nom, username, pwd)
 
 # Per consultar alumnes d'un grup
