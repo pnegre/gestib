@@ -98,13 +98,14 @@ def consultaGrup(request):
         post = request.POST
         gid = post['grup']
         grup = Grup.objects.get(id=gid)
-        result = ""
-        result += "email;city;lastname1;lastname2;firstname;username;password_clear\n"
+        result = "email;city;lastname1;lastname2;firstname;username;password_clear\n"
         for m in Matricula.objects.filter(anny=any_actual, grup=grup):
             result += tractaAlumne(m.alumne)
 
-        print result
-
+        response = HttpResponse(content = result, content_type='text/csv')
+        filename = str(any_actual) + "." + str(grup) + ".csv"
+        response['Content-Disposition'] = 'attachment; filename="%s"' % (filename)
+        return response
     else:
         cursos = Curs.objects.filter(anny=any_actual)
         grups = []
