@@ -32,6 +32,14 @@ table td, table th {
 		<tr> <td> Alumnes: </td> <td> {{ nalumnes }} </td> </tr>
 		<tr> <td> Cursos: </td> <td> {{ ncursos }} </td> </tr>
 		<tr> <td> Grups: </td> <td> {{ ngrups }} </td> </tr>
+		<tr> <td> Incidències Alumnes: </td> <td>
+            <ul>
+            {% for i in incidencies %}
+            <li> {{ i }} </li>
+            {% endfor %}
+            </ul>
+            </td>
+            </tr>
 		<tr> <td> Matrícules: </td> <td> {{ nmats }} </td> </tr>
         <tr> <td> Submatèries: </td> <td> {{ nsubs }} </td> </tr>
         <tr> <td> Submatèries-grup: </td> <td> {{ nsubmatgrup }} </td> </tr>
@@ -45,6 +53,7 @@ table td, table th {
                 {{ form.as_table }}
             </table>
 
+        {% csrf_token %}
 		<input type="submit" class="submit">
 
 		</form>

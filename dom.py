@@ -13,12 +13,14 @@ def getYear(dom):
         return int(anny)
 
 
-def importProfessors(dom):
+def importProfessors(incidencies, dom):
     nprofes = 0
     professors = dom.getElementsByTagName('PROFESSOR')
     for prof in professors:
         codi_prof = prof.getAttribute('codi')
-        if Professor.objects.filter(codi=codi_prof): continue
+        if Professor.objects.filter(codi=codi_prof):
+            # El professor ja existeix. No fem res.
+            continue
 
         p = Professor(
             codi = prof.getAttribute('codi'),
@@ -32,7 +34,7 @@ def importProfessors(dom):
     return nprofes
 
 
-def importCursos(dom, anny):
+def importCursos(incidencies, dom, anny):
     ncursos = 0
     ngrups = 0
     cursos = dom.getElementsByTagName('CURS')
@@ -51,7 +53,7 @@ def importCursos(dom, anny):
             try:
                 tutor = Professor.objects.get(codi=grup.getAttribute('tutor'))
             except:
-                pass
+                incidencies.append("Grup %s-%s no te tutor" % (curs.getAttribute('descripcio'), grup.getAttribute('nom')))
 
             try:
                 g = Grup.objects.get(codi=grup.getAttribute('codi'))
@@ -78,16 +80,19 @@ def importAlumnes(dom, anny):
     nalumnes = 0
     nmats = 0
     alumnes = dom.getElementsByTagName('ALUMNE')
+    incidencies = []
     for alumne in alumnes:
         exp = alumne.getAttribute('expedient')
 
         try:
+            # Alerta. Hem de comprovar QUANTS d'alumnes hi ha amb expedient duplicats?
             alm = Alumne.objects.get(expedient=alumne.getAttribute('expedient'))
             if alm.nom != alumne.getAttribute('nom'):
-                v1 = alm.nom + alm.llinatge1 + alm.llinatge2 + alm.expedient
-                v2 = alumne.getAttribute('nom') + alumne.getAttribute('ap1') + alumne.getAttribute('ap2')
-                raise Exception("Expedients duplicats..." + v1 + v2)
-                
+                v1 = "%s %s, %s. Exp %s"  % (alm.llinatge1, alm.llinatge2, alm.nom, alm.expedient)
+                v2 = "%s %s, %s" % (alumne.getAttribute('ap1'), alumne.getAttribute('ap2'), alumne.getAttribute('nom'))
+                incidencies.append("Expedients duplicats..." + v1 + " --- " + v2)
+                continue
+
         except Alumne.DoesNotExist:
             nom = alumne.getAttribute('nom')
             l1 = alumne.getAttribute('ap1')
@@ -108,7 +113,7 @@ def importAlumnes(dom, anny):
             mt.save()
             nmats += 1
 
-    return nalumnes, nmats
+    return incidencies, nalumnes, nmats
 
 
 
