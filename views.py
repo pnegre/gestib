@@ -82,7 +82,7 @@ def importData(request):
                 'ncursos': ncursos,
                 'ngrups': ngrups,
                 'incidencies': incidencies,
-                # 'nmats': nmats,
+                'nmats': nmats,
                 # 'nsubs': nsubs,
                 # 'nsubmatgrup': nsubmatgrup
             })
