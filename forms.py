@@ -10,4 +10,4 @@ class ImportForm(forms.Form):
 
     def __init__(self, *args, **kwrds):
         super(ImportForm, self).__init__(*args, **kwrds)
-        self.fields['anny'].choices = [[ x.id, x] for x in Any.objects.all() ]
+        self.fields['anny'].choices = [[ x.id, x] for x in Any.objects.all().order_by('-any1')[:10] ]

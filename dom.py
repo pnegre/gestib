@@ -1,6 +1,5 @@
 
 from sets import Set
-
 from xml.dom.minidom import parse, parseString
 
 from gestib.models import *
@@ -18,19 +17,24 @@ def importProfessors(incidencies, dom):
     professors = dom.getElementsByTagName('PROFESSOR')
     for prof in professors:
         codi_prof = prof.getAttribute('codi')
-        if Professor.objects.filter(codi=codi_prof):
-            # El professor ja existeix. No fem res.
+        try:
+            p = Professor.objects.get(codi=codi_prof)
+            # El professor ja existeix. L'activem
+            p.actiu = True
             continue
 
-        p = Professor(
-            codi = prof.getAttribute('codi'),
-            nom = prof.getAttribute('nom'),
-            llinatge1 = prof.getAttribute('ap1'),
-            llinatge2 = prof.getAttribute('ap2'),
-        )
-        p.save()
-        nprofes += 1
+        except Professor.DoesNotExist:
+            p = Professor(
+                codi = prof.getAttribute('codi'),
+                nom = prof.getAttribute('nom'),
+                llinatge1 = prof.getAttribute('ap1'),
+                llinatge2 = prof.getAttribute('ap2'),
+                actiu = True,
+            )
+            nprofes += 1
 
+        p.save()
+    
     return nprofes
 
 
@@ -39,13 +43,16 @@ def importCursos(incidencies, dom, anny):
     ngrups = 0
     cursos = dom.getElementsByTagName('CURS')
     for curs in cursos:
-        cu = Curs.objects.filter(codi=curs.getAttribute('codi'), anny=anny)
-        if cu == None or len(cu) == 0:
+        cu = Curs.objects.get(codi=curs.getAttribute('codi'), anny=anny)
+        if cu == None:
             c = Curs(nom=curs.getAttribute('descripcio'),codi=curs.getAttribute('codi'),anny=anny)
             c.save()
             ncursos += 1
         else:
-            c = cu[0]
+            c = cu
+
+        c.actiu = True
+        c.save()
 
         grups = curs.getElementsByTagName('GRUP')
         if len(grups) == 0:
@@ -61,6 +68,7 @@ def importCursos(incidencies, dom, anny):
                 g = Grup.objects.get(codi=grup.getAttribute('codi'))
                 if tutor:
                     g.tutor = tutor
+                    g.actiu = True
                     g.save()
 
             except Grup.DoesNotExist:
@@ -68,6 +76,7 @@ def importCursos(incidencies, dom, anny):
                     nom = grup.getAttribute('nom'),
                     curs = c,
                     codi = grup.getAttribute('codi'),
+                    actiu = True
                 )
                 if tutor:
                     g.tutor = tutor
@@ -77,6 +86,26 @@ def importCursos(incidencies, dom, anny):
 
     return ncursos, ngrups
 
+def cons(s):
+    consonants = 'BCDFGHJKLMNPQRSTVWXYZ'
+    return filter(lambda x: x in consonants, s)
+
+# Comprova que els noms i els llinatges no son els mateixos, ignorant els caracters no-consonants
+def esAlumneDuplicat(alumne, alBD):
+    if cons(alumne.getAttribute('nom')) != cons(alBD.nom):
+        return False
+    if cons(alumne.getAttribute('ap1')) != cons(alBD.llinatge1):
+        return False
+    if cons(alumne.getAttribute('ap2')) != cons(alBD.llinatge2):
+        return False
+
+    #
+    # if alumne.getAttribute('ap1').encode('ascii', errors='ignore') != alBD.llinatge1.encode('ascii', errors='ignore'):
+    #     return False
+    # if alumne.getAttribute('ap2').encode('ascii', errors='ignore') != alBD.llinatge2.encode('ascii', errors='ignore'):
+    #     return False
+
+    return True
 
 def importAlumnes(incidencies, dom, anny):
     nalumnes = 0
@@ -87,18 +116,30 @@ def importAlumnes(incidencies, dom, anny):
 
         try:
             # Alerta. Hem de comprovar QUANTS d'alumnes hi ha amb expedient duplicats?
+
+            # Ja existeix un alumne amb aquest expedient?
             alm = Alumne.objects.get(expedient=alumne.getAttribute('expedient'))
-            if alm.nom != alumne.getAttribute('nom'):
+
+            # Si l'alumne ja estava activat, problema fatal. No el matriculem
+            if alm.actiu == True:
+                incidencies.append("FATAL: expedients actius duplicats: %s" % exp)
+                continue
+
+            # Si el nom o llinatges no coincideixen, tenim una incidencia.
+            #if alm.nom == alumne.getAttribute('nom') or alm.llinatge1 != alumne.getAttribute('ap1') or alm.llinatge2 != alumne.getAttribute('ap2'):
+            if not esAlumneDuplicat(alumne, alm):
                 v1 = "%s %s, %s. Exp %s"  % (alm.llinatge1, alm.llinatge2, alm.nom, alm.expedient)
                 v2 = "%s %s, %s" % (alumne.getAttribute('ap1'), alumne.getAttribute('ap2'), alumne.getAttribute('nom'))
                 incidencies.append("Expedients duplicats..." + v1 + " --- " + v2)
-                continue
+
+            alm.actiu = True
+            alm.save()
 
         except Alumne.DoesNotExist:
             nom = alumne.getAttribute('nom')
             l1 = alumne.getAttribute('ap1')
             l2 = alumne.getAttribute('ap2')
-            alm = Alumne(nom=nom,llinatge1=l1,llinatge2=l2,expedient=exp)
+            alm = Alumne(nom=nom,llinatge1=l1,llinatge2=l2,expedient=exp,actiu=True)
             alm.save()
             nalumnes += 1
 
