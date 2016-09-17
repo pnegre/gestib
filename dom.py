@@ -183,10 +183,11 @@ def importSubmateriesGrup(dom):
         else:
             data[cgrup].add(csubmat)
 
-    print data
+    # print data
     for cg in data.keys():
         try:
             grup = Grup.objects.get(codi=cg)
+            grup.submateries.clear()
         except Grup.DoesNotExist:
             continue
 
