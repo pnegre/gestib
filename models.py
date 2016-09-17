@@ -31,11 +31,24 @@ class Curs(models.Model):
                 return self.nom
 
 
+class Submateria(models.Model):
+        nom = models.CharField(max_length=200)
+        descripcio = models.CharField(max_length=400)
+        curta = models.CharField(max_length=400)
+        codi = models.CharField(max_length=200)
+        curs = models.ForeignKey(Curs, blank=True, null=True)
+        actiu = models.NullBooleanField()
+
+        def __unicode__(self):
+                return self.nom + ' ' + str(self.curs.anny)
+
+
 class Professor(models.Model):
         nom = models.CharField(max_length=200)
         llinatge1 = models.CharField(max_length=200)
         llinatge2 = models.CharField(max_length=200)
         codi = models.CharField(max_length=200)
+        submateries = models.ManyToManyField(Submateria, blank=True, null=True)
         actiu = models.NullBooleanField()
 
         def __unicode__(self):
@@ -47,6 +60,7 @@ class Grup(models.Model):
         codi = models.CharField(max_length=200)
         tutor = models.ForeignKey(Professor, blank=True, null=True)
         curs = models.ForeignKey(Curs)
+        submateries = models.ManyToManyField(Submateria, blank=True, null=True)
         actiu = models.NullBooleanField()
 
         def __unicode__(self):
@@ -58,6 +72,7 @@ class Alumne(models.Model):
         llinatge1 = models.CharField(max_length=200)
         llinatge2 = models.CharField(max_length=200)
         expedient = models.CharField(max_length=200)
+        submateries = models.ManyToManyField(Submateria, blank=True, null=True)
         actiu = models.NullBooleanField()
 
         def __unicode__(self):
@@ -72,24 +87,3 @@ class Matricula(models.Model):
     alumne = models.ForeignKey(Alumne)
     anny = models.ForeignKey(Any)
     grup = models.ForeignKey(Grup)
-
-
-class Submateria(models.Model):
-        nom = models.CharField(max_length=200)
-        descripcio = models.CharField(max_length=400)
-        curta = models.CharField(max_length=400)
-        codi = models.CharField(max_length=200)
-        curs = models.ForeignKey(Curs, blank=True, null=True)
-        actiu = models.NullBooleanField()
-
-        def __unicode__(self):
-                return self.nom + ' ' + self.curs.anny
-
-
-class SubmateriaGrup(models.Model):
-    submateria = models.ForeignKey(Submateria)
-    grup = models.ForeignKey(Grup)
-    actiu = models.NullBooleanField()
-
-    def __unicode__(self):
-        return self.grup.nom + ' ' + self.submateria.curta

@@ -183,6 +183,7 @@ def importSubmateriesGrup(dom):
         else:
             data[cgrup].add(csubmat)
 
+    print data
     for cg in data.keys():
         try:
             grup = Grup.objects.get(codi=cg)
@@ -193,12 +194,13 @@ def importSubmateriesGrup(dom):
             try:
                 submateria = Submateria.objects.get(codi=cs)
                 try:
-                    SubmateriaGrup.objects.get(submateria=submateria, grup=grup)
-                except SubmateriaGrup.DoesNotExist:
-                    obj = SubmateriaGrup(submateria=submateria, grup=grup)
-                    obj.save()
+                    grup.submateries.add(submateria)
                     nsubmatgrup += 1
+                except:
+                    pass
             except Submateria.DoesNotExist:
                 pass
+
+        grup.save()
 
     return nsubmatgrup
