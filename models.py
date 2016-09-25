@@ -48,7 +48,6 @@ class Professor(models.Model):
         llinatge1 = models.CharField(max_length=200)
         llinatge2 = models.CharField(max_length=200)
         codi = models.CharField(max_length=200)
-        submateries = models.ManyToManyField(Submateria, blank=True, null=True)
         actiu = models.NullBooleanField()
 
         def __unicode__(self):
@@ -72,7 +71,6 @@ class Alumne(models.Model):
         llinatge1 = models.CharField(max_length=200)
         llinatge2 = models.CharField(max_length=200)
         expedient = models.CharField(max_length=200)
-        submateries = models.ManyToManyField(Submateria, blank=True, null=True)
         actiu = models.NullBooleanField()
 
         def __unicode__(self):

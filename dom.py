@@ -163,8 +163,10 @@ def importSubmateries(dom, anny):
 
         try:
             sbm = Submateria.objects.get(codi=codi, curs=curs)
+            sbm.actiu = True
+            sbm.save()
         except Submateria.DoesNotExist:
-            sbm = Submateria(nom=nom,descripcio=descripcio,curta=curta,codi=codi,curs=curs)
+            sbm = Submateria(nom=nom,descripcio=descripcio,curta=curta,codi=codi,curs=curs,actiu=True)
             sbm.save()
             nsubs += 1
 

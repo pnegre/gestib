@@ -41,8 +41,6 @@ def cleanBeforeImport(anny):
     # Desactivem tots els grups
     Grup.objects.all().update(actiu=False)
 
-    # TODO: Faltaríen les matéries i submatèries...
-
 
 
 # Mostra el form per importar dades de l'xml del gestib
