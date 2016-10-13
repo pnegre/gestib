@@ -53,7 +53,7 @@ def importData(request):
             fle = form.cleaned_data['fle']
             anny = Any.objects.get(id=annyid)
             ials = getOption(form.cleaned_data, 'importAlumnes')
-            iprofs = getOption(form.cleaned_data, 'importProfessors')
+            iprofs = getOption(form.cleaned_data, 'importProfes')
             icursos = getOption(form.cleaned_data, 'importCursos')
             isubmats = getOption(form.cleaned_data, 'importSubmateries')
 
