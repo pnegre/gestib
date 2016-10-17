@@ -74,8 +74,9 @@ def importCursos(incidencies, dom, anny):
                 g = Grup.objects.get(codi=grup.getAttribute('codi'))
                 if tutor:
                     g.tutor = tutor
-                    g.actiu = True
-                    g.save()
+
+                g.actiu = True
+                g.save()
 
             except Grup.DoesNotExist:
                 g = Grup(
