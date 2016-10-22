@@ -1,5 +1,4 @@
-
-from sets import Set
+# -*- coding: utf-8 -*-
 from xml.dom.minidom import parse, parseString
 
 from gestib.models import *
@@ -101,36 +100,43 @@ def importAlumnes(incidencies, dom, anny):
     alumnes = dom.getElementsByTagName('ALUMNE')
     for alumne in alumnes:
         exp = alumne.getAttribute('expedient')
+        nom = alumne.getAttribute('nom')
+        l1 = alumne.getAttribute('ap1')
+        l2 = alumne.getAttribute('ap2')
 
-        try:
-            # Ja existeix un alumne amb aquest expedient?
-            alm = Alumne.objects.get(expedient=alumne.getAttribute('expedient'))
-
-            # Si l'alumne ja estava activat, problema fatal. No el matriculem
-            if alm.actiu == True:
-                v1 = "%s %s, %s. Exp %s"  % (alm.llinatge1, alm.llinatge2, alm.nom, alm.expedient)
-                v2 = "%s %s, %s" % (alumne.getAttribute('ap1'), alumne.getAttribute('ap2'), alumne.getAttribute('nom'))
-                incidencies.append("FATAL: Expedients ACTIUS duplicats..." + v1 + " --- " + v2)
-                continue
-
-            # Si el nom o llinatges no coincideixen, tenim una incidencia.
-            #if alm.nom == alumne.getAttribute('nom') or alm.llinatge1 != alumne.getAttribute('ap1') or alm.llinatge2 != alumne.getAttribute('ap2'):
-            if not esAlumneDuplicat(alumne, alm):
-                v1 = "%s %s, %s. Exp %s"  % (alm.llinatge1, alm.llinatge2, alm.nom, alm.expedient)
-                v2 = "%s %s, %s" % (alumne.getAttribute('ap1'), alumne.getAttribute('ap2'), alumne.getAttribute('nom'))
-                incidencies.append("Expedients duplicats..." + v1 + " --- " + v2)
-
-            alm.actiu = True
-            alm.save()
-
-        # L'alumne no existeix. El creem
-        except Alumne.DoesNotExist:
-            nom = alumne.getAttribute('nom')
-            l1 = alumne.getAttribute('ap1')
-            l2 = alumne.getAttribute('ap2')
+        alm = None
+        als =  Alumne.objects.filter(expedient=alumne.getAttribute('expedient'))
+        if len(als) == 0:
+            # L'alumne no existia. El creem
             alm = Alumne(nom=nom,llinatge1=l1,llinatge2=l2,expedient=exp,actiu=True)
             alm.save()
             nalumnes += 1
+        else:
+            for alm in als:
+                # Si l'alumne ja estava activat, problema fatal. No el matriculem
+                if alm.actiu == True:
+                    v1 = "%s %s, %s. Exp %s"  % (alm.llinatge1, alm.llinatge2, alm.nom, alm.expedient)
+                    v2 = "%s %s, %s" % (alumne.getAttribute('ap1'), alumne.getAttribute('ap2'), alumne.getAttribute('nom'))
+                    incidencies.append("FATAL: Expedients ACTIUS duplicats..." + v1 + " --- " + v2)
+                    continue
+
+                if esAlumneDuplicat(alumne, alm):
+                    alm.actiu = True
+                    alm.save()
+                    break
+
+                # Si el nom o llinatges no coincideixen, tenim una incidencia.
+                v1 = "%s %s, %s. Exp %s"  % (alm.llinatge1, alm.llinatge2, alm.nom, alm.expedient)
+                v2 = "%s %s, %s" % (l1, l2, nom)
+                incidencies.append("Expedients duplicats..." + v1 + " --- " + v2)
+
+        if alm.actiu != True:
+            # L'expedient de l'alumne que estem inserint ja existeix, però no és un duplicat
+            # Aleshores, inserim el nou alumne i ja ho resoldrem manualment...
+            alm = Alumne(nom=nom,llinatge1=l1,llinatge2=l2,expedient=exp,actiu=True)
+            alm.save()
+            nalumnes += 1
+
 
         # Matriculem l'alumne al grup que toca
         # Suposem que les matricules d'aquest any estan esborrades... (ho fem abans de comencar l'importacio)
@@ -164,7 +170,7 @@ def importSubmateries(dom, anny):
 
         try:
             sbm = Submateria.objects.get(codi=codi, curs=curs)
-            sbm.actiu = True
+            # sbm.actiu = True
             sbm.save()
         except Submateria.DoesNotExist:
             sbm = Submateria(nom=nom,descripcio=descripcio,curta=curta,codi=codi,curs=curs,actiu=True)
@@ -182,7 +188,7 @@ def importSubmateriesGrup(dom):
         cgrup = ses.getAttribute('grup')
         csubmat = ses.getAttribute('submateria')
         if not cgrup in data.keys():
-            data[cgrup] = Set([ csubmat ])
+            data[cgrup] = set([ csubmat ])
         else:
             data[cgrup].add(csubmat)
 
