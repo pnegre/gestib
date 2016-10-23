@@ -6,7 +6,11 @@
     <div ng-controller="inconsistenciesController">
     Expedients duplicats:
     <ul>
-        <li ng-repeat="exp in dups"> // exp // </li>
+        <li ng-repeat="exp in dups"> Expedient: // exp.exp //
+        <ul>
+            <li ng-repeat="a in exp.alumnes"> |// a.nom //| |// a.llinatge1 //| |// a.llinatge2 //| Actiu: // a.actiu //</li>
+        </ul>
+        </li>
     </ul>
     </div>
 

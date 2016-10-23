@@ -23,4 +23,11 @@ def toJson(data):
 @permission_required('gestib.importar_alumnes')
 def getDuplicates(request):
     dups = Alumne.objects.values('expedient').annotate(Count('id')).filter(id__count__gt=1)
-    return toJson([ d['expedient'] for d in dups ])
+    result = []
+    for d in dups:
+        als = Alumne.objects.filter(expedient=d['expedient'])
+        lals = [ {'id': a.id, 'nom': a.nom, 'llinatge1': a.llinatge1, 'llinatge2': a.llinatge2,
+            'actiu': a.actiu } for a in als]
+        result.append({'exp': d['expedient'], 'alumnes': lals})
+
+    return toJson(result)
