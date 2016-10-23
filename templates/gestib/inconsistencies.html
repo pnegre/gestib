@@ -1,0 +1,13 @@
+{% extends "gestib/base.html" %}
+
+{% block content %}
+
+	<h1> Inconsistències </h1>
+    <div ng-controller="inconsistenciesController">
+    Expedients duplicats:
+    <ul>
+        <li ng-repeat="exp in dups"> // exp // </li>
+    </ul>
+    </div>
+
+{% endblock %}

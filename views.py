@@ -112,3 +112,9 @@ def importData(request):
     return renderResponse(request, 'gestib/import.html', {
         'form': form,
     } )
+
+
+# Mostra el form per importar dades de l'xml del gestib
+@permission_required('gestib.importar_alumnes')
+def inconsistencies(request):
+    return renderResponse(request, 'gestib/inconsistencies.html', {})
